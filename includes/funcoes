@@ -1,0 +1,246 @@
+#include <iostream>
+#include <string>
+#include <sys/stat.h>
+#include <fstream>
+#include <ctime>
+using namespace std;
+	
+void carregarFuncoes()									//Função que carrega todas as funcoes dentro do arquivo 
+{
+	void loginSistema();
+	void criadorProjetos();
+	void menuPrincipal();
+	void criadorProjetos();
+	void lerProjetoSimples();
+	void lerProjetosMenu();
+	void lerProjetos();
+	void criarPasta(string);
+	void criarCadastro(string);
+
+}
+
+void criarPasta(string carpeta)							//Função que cria pastas dentro do sistema
+{
+	const char *pasta = carpeta.c_str();;
+	if(mkdir(pasta) == 0){
+		cout << "Diretorio criado\n";
+	}
+	else
+	{
+		cout << "esta pasta ja existe!\n";
+	}
+}
+
+void criarCadastro(string nomedoprojeto)				//Função que cadastra projeto dentro da base de dados
+{
+	string nomeArquivo;
+
+	nomeArquivo = nomedoprojeto + "/" + nomedoprojeto + ".INFO";
+
+	const char *nomearquivofinal = nomeArquivo.c_str();
+	ofstream arquivo; 
+	time_t now = time(0);
+	char* dt = ctime(&now);
+    cout << "Abrindo arquivo...\n"; 
+    arquivo.open(nomearquivofinal);   
+    cout << "Inserindo dados no arquivo.\n"; 
+    arquivo << "Nome do projeto: " << nomedoprojeto << endl;
+    arquivo << "Data do projeto: " << dt << endl;
+	cout << nomeArquivo << endl;                      
+    arquivo.close();                
+    cout << "Pronto.\n";
+
+    fstream gravador;
+
+    gravador.open("projetos", ios::out | ios::app);
+    gravador << nomedoprojeto << " " << nomearquivofinal << "\n";
+    gravador.close();
+}
+
+void lerProjetoSimples()								//Função que lê projetos de forma singular 
+{
+	  string lendoprojeto; 
+      fstream leitor; 
+      
+      leitor.open("Tentativa1/Tentativa1.INFO", ios::in); 
+      
+      if (leitor) 
+      { 
+          getline(leitor, lendoprojeto); 
+          
+          while (leitor) 
+          { 
+              cout << lendoprojeto << endl; 
+              getline(leitor, lendoprojeto); 
+          } 
+          leitor.close(); 
+      } 
+      else 
+      { 
+          cout << "ERROR: Cannot open file.\n"; 
+      } 
+}
+
+void lerProjetos()										//Função que importa projeto para dentro do sistema
+{
+	ifstream leitor;									//Variavel que indica a ponte de importação do arquivo
+	int x = 1;											//Variável para numerar cada projeto, começando no número 1
+	string lendoprojeto;								//
+
+    leitor.open("projetos");
+    
+    while(leitor >> lendoprojeto)
+    {
+    	cout << x << ". " << lendoprojeto << endl;
+    	x++;
+	}    
+    
+    leitor.close();
+}
+
+void criadorProjetos()									//Função que mostra os projetos criados
+{
+	string nomepasta;
+	int linha;
+	
+	const int ENTRAR_PROGRAMA = 1,
+			  SAIR_PROGRAMA   = 2;
+			  	
+	do
+	{
+		cout << "\nDeseja criar um projeto?\n"
+		 	 << "1. Sim\n"
+		 	 << "2. Nao\n"
+		 	 << "Entre com um valor: ";
+		cin >> linha;
+		
+		while (linha < ENTRAR_PROGRAMA || linha > SAIR_PROGRAMA)
+		{
+			cout << "Por favor, entre um valor valido: ";
+			cin >> linha;
+		}
+		
+		if(linha != SAIR_PROGRAMA)
+		{	
+			cout << "\nQual nome deseja dar ao Projeto?\n";
+			cin >> nomepasta;
+			
+			string nomeprojeto = nomepasta;
+			
+			switch(linha)
+			{
+				case ENTRAR_PROGRAMA:
+					criarPasta(nomepasta);
+					criarCadastro(nomeprojeto);
+					break;
+			}
+		}
+	}while(linha != SAIR_PROGRAMA);				//Enquanto a variável de entrada for diferente da opção sair
+}
+
+void lerProjetosMenu()							//Função que mostra os projetos criados
+{
+	 const int VOLTAR_LEITORMENU = 1,			//Valor constante para a opção de voltar para o menu principal
+		  	   SAIR_LEITORMENU   = 2;			//Valor constante para a opção de sair para o menu principal
+		
+	int escolhaPrincipal;						//Variavel de entrada de dados
+
+	lerProjetos();								//Executa função que imprime projetos na tela
+	
+	do 											//Faça
+	{
+		cout << "\n\tO que deseja fazer?\n"		//Imprime texto do menu na tela
+    	 << "1. Voltar\n"
+    	 << "2. Sair\n";
+		cin >> escolhaPrincipal;				//Entrada de Dados 
+		
+		while (escolhaPrincipal < VOLTAR_LEITORMENU || escolhaPrincipal > SAIR_LEITORMENU)	//Enquanto a entrada de dados não for válida,
+		{																			   		//faça com que isso se repita até ser válido
+			cout << "Por favor, entre um valor valido: ";
+			cin >> escolhaPrincipal;														//Entrada de dados
+		}
+		
+		if(escolhaPrincipal != SAIR_LEITORMENU)		//Se a variavel de entrada for diferente da variavel de sair do programa
+		{
+			switch(escolhaPrincipal)				//Caso a escolha seja a variável de entrada, faça
+			{
+				case VOLTAR_LEITORMENU:					//Caso a escolha seja voltar
+					 cout << "\nVoltar Main Menu\n";	//Imprime mensagem na tela
+					 break;								//Fim
+			}
+		}
+	}while(escolhaPrincipal != SAIR_LEITORMENU);	//Enquanto a variável de entrada for diferente da opção sair
+}
+
+void menuPrincipal()					//Função que cria o menu principal
+{
+	const int ENTRAR_MAINMENU = 1,		//Valor constante para a opção de criar um projeto
+			  LER_MAINMENU = 2,			//Valor constante para a opção de ler um projeto
+			  SAIR_MAINMENU   = 3;		//Valor constante para a opção de sair do sistema
+	
+	int escolhaPrincipal;				//Variável de entrada de dados
+	
+	do 									//Faça
+	{
+		cout << "\t\tGerenciador de Projetos - ver 1.0\n\n"			//Imprime texto do Menu
+		 	 << "1. Criar um projeto\n"
+		 	 << "2. Ler um projeto\n"
+		 	 << "3. Sair\n";
+		cin >> escolhaPrincipal;									//Entrada de dados
+		
+		while (escolhaPrincipal < ENTRAR_MAINMENU || escolhaPrincipal > SAIR_MAINMENU) //Enquanto a entrada de dados não for válida,
+		{																			   //faça com que isso se repita até ser válido
+			cout << "Por favor, entre um valor valido: ";
+			cin >> escolhaPrincipal;			//Entrada de dados
+		}
+		
+		if(escolhaPrincipal != SAIR_MAINMENU)	//Se a variavel de entrada for diferente da variavel de sair do programa
+		{
+			switch(escolhaPrincipal)			//Caso a escolha seja a variável de entrada, faça
+			{
+				case ENTRAR_MAINMENU:			//Caso a escolha seja Criar um projeto
+					 criadorProjetos();			//Execute essa função
+					 break;						//fim deste caso
+				case LER_MAINMENU:				//Caso a escolha seja Ler um projeto
+					 cout << "\n";				//Quebre uma linha
+					 lerProjetosMenu();			//Execute essa função
+					 break;						//Fim
+			}
+		}
+	}while(escolhaPrincipal != SAIR_MAINMENU); //Equanto a variável de entrada for diferente da constante de sair do programa
+}
+
+
+
+void loginSistema()
+{
+	int x; 								//Variável para comparação
+
+	string senha; 						//Variável de entrada de dados
+
+	cout << "\t\tGerenciador de Projetos - ver 1.0\n\n"; //Titulo Programa
+
+	cout << "Digite a senha:\n";
+	cin >> senha;						//Entrada da senha no sistema
+
+do{										//Faça
+	if(senha == "123456")				//Se a senha insrida for igual ao valor descrito
+	{
+		x = 0;							//A variável X retornará 0
+	}
+	else								//Caso contrário
+	{
+		x = 1;							//Irá retornar 1
+	}
+
+	if(x != 0)							//Se X for diferente de 0
+	{
+		cout << "\nSenha incorreta."	//Imprime esta mensagem na tela
+			 << "\n\nDigite novamente:\n"; //Negando o acesso
+		cin >> senha;					//E pede a entrada de uma senha nova
+	}
+}while(x !=0);							//Enquanto X não retornar valor diferente de 0
+	
+	cout << "\nEntrou no sistema!\n";   //Imprime mensagem dizendo que usuario entrou no sistema
+	system("CLS");						//Limpa janela do Prompt de Comando
+}
