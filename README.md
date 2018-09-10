@@ -7,5 +7,5 @@ Social Medias:
 >[Instagram](http://www.instagram.com/ofernandoavila/): ofernandoavila <br />
 >[Facebook](http://www.facebook.com/ofernandoavila/): ofernandoavila
 
-**__ver 1.1: MD5 Encrypter include
+**__ver 1.1: MD5 Encrypter include <br />
 ver 1.0: Main Realease__**
