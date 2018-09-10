@@ -6,3 +6,6 @@ Small CRUD system made with C ++ for study. You can create, read, edit, and dele
 Social Medias:
 >[Instagram](http://www.instagram.com/ofernandoavila/): ofernandoavila <br />
 >[Facebook](http://www.facebook.com/ofernandoavila/): ofernandoavila
+
+**__ver 1.1: MD5 Encrypter include
+ver 1.0: Main Realease__**
