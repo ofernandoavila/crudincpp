@@ -4,5 +4,5 @@ Small CRUD system made with C ++ for study. You can create, read, edit, and dele
 **root password to access the system: 123456**
 
 Social Medias:
->[Instagram](http://www.instagram.com/ofernandoavila/): ofernandoavila \n
+>[Instagram](http://www.instagram.com/ofernandoavila/): ofernandoavila <br />
 >[Facebook](http://www.facebook.com/ofernandoavila/): ofernandoavila
