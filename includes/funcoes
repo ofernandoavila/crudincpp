@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <sys/stat.h>
 #include <fstream>
+#include "../md5/md5.h"
 #include <ctime>
 using namespace std;
 	
@@ -85,39 +87,39 @@ void lerProjetos()										//Função que importa projeto para dentro do sistem
 {
 	ifstream leitor;									//Variavel que indica a ponte de importação do arquivo
 	int x = 1;											//Variável para numerar cada projeto, começando no número 1
-	string lendoprojeto;								//
+	string lendoprojeto;								//Variável que irá receber o valor de cada palavra dentro do arquivo
 
-    leitor.open("projetos");
+    leitor.open("projetos");							//Função que de abre o arquivo
     
-    while(leitor >> lendoprojeto)
+    while(leitor >> lendoprojeto)						//Enquanto o leitor não ler tudo 
     {
-    	cout << x << ". " << lendoprojeto << endl;
-    	x++;
-	}    
+    	cout << x << ". " << lendoprojeto << endl;		//Imprime na tela o valor da variável 
+    	x++;											//Aumenta em um o contador
+	}    	
     
     leitor.close();
 }
 
 void criadorProjetos()									//Função que mostra os projetos criados
 {
-	string nomepasta;
-	int linha;
+	string nomepasta;									//Variavel que define o nome da pasta
+	int linha;											//Variavel de entrada de dados
 	
-	const int ENTRAR_PROGRAMA = 1,
-			  SAIR_PROGRAMA   = 2;
+	const int ENTRAR_PROGRAMA = 1,						//Valor constante para a opção de voltar para o menu principal
+			  SAIR_PROGRAMA   = 2;						//Valor constante para a opção de sair para o menu principal
 			  	
-	do
+	do 													//Faça
 	{
-		cout << "\nDeseja criar um projeto?\n"
+		cout << "\nDeseja criar um projeto?\n"			//Imprime texto do menu na tela
 		 	 << "1. Sim\n"
 		 	 << "2. Nao\n"
 		 	 << "Entre com um valor: ";
-		cin >> linha;
+		cin >> linha;									//Entrada de Dados
 		
-		while (linha < ENTRAR_PROGRAMA || linha > SAIR_PROGRAMA)
-		{
+		while (linha < ENTRAR_PROGRAMA || linha > SAIR_PROGRAMA)	//Enquanto a entrada de dados não for válida,
+		{															//faça com que isso se repita até ser válido
 			cout << "Por favor, entre um valor valido: ";
-			cin >> linha;
+			cin >> linha;											//Entrada de dados
 		}
 		
 		if(linha != SAIR_PROGRAMA)
@@ -182,7 +184,7 @@ void menuPrincipal()					//Função que cria o menu principal
 	
 	do 									//Faça
 	{
-		cout << "\t\tGerenciador de Projetos - ver 1.0\n\n"			//Imprime texto do Menu
+		cout << "\t\tGerenciador de Projetos - ver 1.1\n\n"			//Imprime texto do Menu
 		 	 << "1. Criar um projeto\n"
 		 	 << "2. Ler um projeto\n"
 		 	 << "3. Sair\n";
@@ -210,36 +212,50 @@ void menuPrincipal()					//Função que cria o menu principal
 	}while(escolhaPrincipal != SAIR_MAINMENU); //Equanto a variável de entrada for diferente da constante de sair do programa
 }
 
-
-
 void loginSistema()
 {
-	int x; 								//Variável para comparação
+	ifstream arquivo;
+	char senhaC[250];
+	
+	arquivo.open("data/pass.save");
+	arquivo >> senhaC;
+	arquivo.close();
+	MD5 md5;
 
-	string senha; 						//Variável de entrada de dados
+	cout << senhaC;
 
-	cout << "\t\tGerenciador de Projetos - ver 1.0\n\n"; //Titulo Programa
+	int x;
+	char* senha;
 
+	cout << "\t\tGerenciador de Projetos - ver 1.0\n\n";
 	cout << "Digite a senha:\n";
-	cin >> senha;						//Entrada da senha no sistema
+	cin >> senha;
 
-do{										//Faça
-	if(senha == "123456")				//Se a senha insrida for igual ao valor descrito
-	{
-		x = 0;							//A variável X retornará 0
-	}
-	else								//Caso contrário
-	{
-		x = 1;							//Irá retornar 1
-	}
+	senha = md5.digestString(senha);
 
-	if(x != 0)							//Se X for diferente de 0
+	string senhaS;
+	string senhaCS;
+
+	senhaS = senha;
+	senhaCS = senhaC;
+
+	do
 	{
-		cout << "\nSenha incorreta."	//Imprime esta mensagem na tela
-			 << "\n\nDigite novamente:\n"; //Negando o acesso
-		cin >> senha;					//E pede a entrada de uma senha nova
-	}
-}while(x !=0);							//Enquanto X não retornar valor diferente de 0
+
+		if(senhaS == senhaCS)
+		{
+			x = 0;
+		}
+		else
+		{
+			cout << senha << endl;
+			cout << senhaC << endl;
+			cout << "\nSenha incorreta."
+				 << "\n\nDigite novamente:\n";
+			cin >> senha;
+		}
+
+	}while(x != 0);
 	
 	cout << "\nEntrou no sistema!\n";   //Imprime mensagem dizendo que usuario entrou no sistema
 	system("CLS");						//Limpa janela do Prompt de Comando
